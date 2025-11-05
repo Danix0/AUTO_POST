@@ -20,5 +20,5 @@ const res = await fetch("https://account-public-service-prod.ol.epicgames.com/ac
 });
 
 const data = await res.json();
-console.log("Nowy token:", data.access_token);
+console.log("Nowy token:", data);
 
