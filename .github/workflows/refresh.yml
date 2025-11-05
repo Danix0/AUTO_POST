@@ -1,1 +1,30 @@
+name: Refresh Epic Token
+
+on:
+  schedule:
+    - cron: "0 12 * * *"  # codziennie o 12:00 UTC
+  workflow_dispatch:      # pozwala też uruchomić ręcznie z GitHuba
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Ustaw Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Zainstaluj zależności
+        run: npm install node-fetch@3
+
+      - name: Wykonaj refresh
+        run: node refresh.js
+        env:
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
 
