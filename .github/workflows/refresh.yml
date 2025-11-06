@@ -1,5 +1,4 @@
 name: Refresh Epic Token
-
 on:
   schedule:
     - cron: "* * * * *"  # codziennie o 12:00 UTC
@@ -20,7 +19,17 @@ jobs:
 
       - name: Zainstaluj zależności
         run: npm install node-fetch@3
-
+        
+      - name: Check environment
+        run: |
+          echo "Czy REFRESH_TOKEN istnieje?"
+          if [ -z "$REFRESH_TOKEN" ]; then
+            echo "❌ Brak REFRESH_TOKEN"
+          else
+            echo "✅ REFRESH_TOKEN istnieje (ukryto wartość)"
+          fi
+        env:
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
       - name: Wykonaj refresh
         env:
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
