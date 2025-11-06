@@ -12,7 +12,7 @@ const res = await fetch("https://account-public-service-prod.ol.epicgames.com/ac
   },
   body: new URLSearchParams({
     grant_type: "refresh_token",
-    refresh_token: "2b170c4ecd1e43fc84b1bc9b0895aa05"
+    refresh_token: refreshToken
   })
 });
 
