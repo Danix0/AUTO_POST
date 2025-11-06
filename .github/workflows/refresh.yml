@@ -17,11 +17,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Ustaw Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
       - name: Zainstaluj zależności
         run: npm install node-fetch@3
         
