@@ -2,7 +2,7 @@ name: Refresh Epic Token
 
 on:
   schedule:
-    - cron: "0 2 * * *"  # codziennie o 12:00 UTC
+    - cron: "0 1 * * *"  # codziennie o 12:00 UTC
   workflow_dispatch:      # pozwala też uruchomić ręcznie z GitHuba
 
 jobs:
