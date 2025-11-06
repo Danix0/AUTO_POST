@@ -1,16 +1,21 @@
 name: Refresh Epic Token
 on:
+  workflow_dispatch:
   schedule:
-    - cron: "* * * * *"  # codziennie o 12:00 UTC
-  workflow_dispatch:      # pozwala też uruchomić ręcznie z GitHuba
+    # “At 13:37 on every day-of-week from Monday through Friday.”
+    - cron: "* * * * *"
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: Ustaw Node.js
         uses: actions/setup-node@v4
@@ -20,16 +25,6 @@ jobs:
       - name: Zainstaluj zależności
         run: npm install node-fetch@3
         
-      - name: Check environment
-        run: |
-          echo "Czy REFRESH_TOKEN istnieje?"
-          if [ -z "$REFRESH_TOKEN" ]; then
-            echo "❌ Brak REFRESH_TOKEN"
-          else
-            echo "✅ REFRESH_TOKEN istnieje (ukryto wartość)"
-          fi
-        env:
-          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
       - name: Wykonaj refresh
         env:
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
