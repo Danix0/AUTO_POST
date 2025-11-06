@@ -8,11 +8,11 @@ const res = await fetch("https://account-public-service-prod.ol.epicgames.com/ac
   headers: {
     "Content-Type": "application/x-www-form-urlencoded",
     // Używamy klienta launcherAppClient2 (działa stabilnie)
-    "Authorization": "basic MzRhMDJjZjhmNDQxNGUyOWIxNTkyMTg3NmRhMzZmOWE6ZGFhZmJjY2M3Mzc3NDUwMzlkZmZlNTNkOTRmYzc2Y2Y="
+    "Authorization": "basic ZWM2ODRiOGM2ODdmNDc5ZmFkZWEzY2IyYWQ4M2Y1YzY6ZTFmMzFjMjExZjI4NDEzMTg2MjYyZDM3YTEzZmM4NGQ="
   },
   body: new URLSearchParams({
     grant_type: "refresh_token",
-    refresh_token: refreshToken
+    refresh_token: "2b170c4ecd1e43fc84b1bc9b0895aa05"
   })
 });
 
