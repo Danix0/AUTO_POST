@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   schedule:
     # “At 13:37 on every day-of-week from Monday through Friday.”
-    - cron: "* * * * *"
+    - cron: "*/10 * * * *"
 
 jobs:
   refresh:
@@ -11,11 +11,11 @@ jobs:
 
     steps:
 
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v4
+      - name: Ustaw Node.js
+        uses: actions/setup-node@v4 
+        with: 
+          node-version: 20
 
       - name: Zainstaluj zależności
         run: npm install node-fetch@3
