@@ -1,17 +1,14 @@
 // refresh.js
 import fetch from "node-fetch";
 
-const clientId = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
 const refreshToken = process.env.REFRESH_TOKEN;
-
-const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
 
 const res = await fetch("https://account-public-service-prod.ol.epicgames.com/account/api/oauth/token", {
   method: "POST",
   headers: {
     "Content-Type": "application/x-www-form-urlencoded",
-    "Authorization": `Basic ${auth}`
+    // Używamy klienta launcherAppClient2 (działa stabilnie)
+    "Authorization": "basic MzRhMDJjZjhmNDQxNGUyOWIxNTkyMTg3NmRhMzZmOWE6ZGFhZmJjY2M3Mzc3NDUwMzlkZmZlNTNkOTRmYzc2Y2Y="
   },
   body: new URLSearchParams({
     grant_type: "refresh_token",
@@ -19,6 +16,5 @@ const res = await fetch("https://account-public-service-prod.ol.epicgames.com/ac
   })
 });
 
-const data = await res.json();
-console.log("Nowy token:", data);
-
+const text = await res.text();
+console.log("Nowy token:", text);
