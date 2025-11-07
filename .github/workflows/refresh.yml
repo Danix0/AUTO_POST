@@ -20,6 +20,52 @@ jobs:
       - name: Zainstaluj zależności
         run: npm install node-fetch@3
         
+      - name: Restore last timestamp
+        id: ts
+        uses: actions/cache/restore@v4
+        with:
+          path: last_run.txt
+          key: last-run-timestamp
+
+      - name: Get current timestamp and calculate delta
+        id: calc
+        run: |
+          now=$(date +%s)
+          
+          if [ -f last_run.txt ]; then
+            last=$(cat last_run.txt)
+          else
+            last=0
+          fi
+
+          echo "now=$now" >> $GITHUB_OUTPUT
+          echo "last=$last" >> $GITHUB_OUTPUT
+
+          delta=$((now - last))
+          echo "delta=$delta" >> $GITHUB_OUTPUT
+          echo $now > last_run.txt
+
+      - name: Save timestamp back to cache
+        uses: actions/cache/save@v4
+        with:
+          path: last_run.txt
+          key: last-run-timestamp
+
+      - name: Check if enough time passed
+        id: check
+        run: |
+          # wymagane 44h = 158400 sekund
+          REQUIRED=$((42 * 3600))
+          if [ ${{ steps.calc.outputs.delta }} -lt $REQUIRED ]; then
+            echo "notyet=true" >> $GITHUB_OUTPUT
+          else
+            echo "notyet=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Exit if too early
+        if: steps.check.outputs.notyet == 'true'
+        run: echo "Za wcześnie → workflow kończy się." && exit 0
+
       - name: Wykonaj refresh
         env:
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
