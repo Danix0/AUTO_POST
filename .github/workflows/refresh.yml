@@ -49,7 +49,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: last_run.txt
-          key: last-run-timestamp
+          key: last_run-${{ github.run_id }}
 
       - name: Check if enough time passed
         id: check
