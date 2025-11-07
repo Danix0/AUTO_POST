@@ -54,7 +54,6 @@ jobs:
       - name: Check if enough time passed
         id: check
         run: |
-          # wymagane 44h = 158400 sekund
           REQUIRED=$((42 * 3600))
           if [ ${{ steps.calc.outputs.delta }} -lt $REQUIRED ]; then
             echo "notyet=true" >> $GITHUB_OUTPUT
@@ -64,9 +63,10 @@ jobs:
 
       - name: Exit if too early
         if: steps.check.outputs.notyet == 'true'
-        run: echo "Za wcześnie → workflow kończy się." && exit 0
+        run: echo "Za wcześnie → workflow kończy się."
 
       - name: Wykonaj refresh
+        if: steps.check.outputs.notyet == 'false'
         env:
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
         run: node refresh.js
