@@ -54,7 +54,7 @@ jobs:
       - name: Check if enough time passed
         id: check
         run: |
-          REQUIRED=$((42 * 3600))
+          REQUIRED=$((42 * 3600 * 0)+1)
           if [ ${{ steps.calc.outputs.delta }} -lt $REQUIRED ]; then
             echo "notyet=true" >> $GITHUB_OUTPUT
           else
