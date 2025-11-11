@@ -23,24 +23,29 @@ jobs:
       - name: Zainstaluj zależności
         run: npm install node-fetch@3
         
-      - name: Restore last timestamp
-        id: ts
-        uses: actions/cache/restore@v4
+      - name: Download a single artifact
+        uses: actions/download-artifact@v5
         with:
-          path: last_run.txt
-          key: last-run-timestamp
+         name: last_run
+         path: last_run.txt
 
       - name: Get current timestamp and calculate delta
         id: calc
         run: |
           now=$(date +%s)
-          last=${{ vars.LAST_RUN }}
+
+          if [ -f last_run.txt ]; then
+            last=$(cat last_run.txt)
+          else
+            last=0
+          fi
           
           echo "now=$now" >> $GITHUB_OUTPUT
           echo "last=$last" >> $GITHUB_OUTPUT
 
           delta=$((now - last))
           echo "delta=$delta" >> $GITHUB_OUTPUT
+          echo $now > last_run.txt
 
    
 
@@ -51,14 +56,9 @@ jobs:
           if [ ${{ steps.calc.outputs.delta }} -lt $REQUIRED ]; then
             echo "notyet=true" >> $GITHUB_OUTPUT
           else
+            temp=0
+            echo $temp> last_run.txt
             echo "notyet=false" >> $GITHUB_OUTPUT
-            temp=$(date +%s)
-            echo $temp > last_run.txt
-            curl -X PATCH \
-              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-              -H "Accept: application/vnd.github+json" \
-              https://api.github.com/repos/${{ github.repository }}/actions/variables/LAST_RUN \
-              -d "{\"value\":\"$temp\"}"
           fi
    
       - name: Exit if too early
@@ -70,3 +70,11 @@ jobs:
         env:
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
         run: node refresh.js
+
+      - name: 'Upload Artifact'
+        if: steps.check.outputs.notyet == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+         name: last_run
+         path: last_run.txt
+         retention-days: 2
