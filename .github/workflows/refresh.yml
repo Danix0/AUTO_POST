@@ -45,6 +45,7 @@ jobs:
         with:
          name: last_run
          path: last_run.txt
+         github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get current timestamp and calculate delta
         id: calc
