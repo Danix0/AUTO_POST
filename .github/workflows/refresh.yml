@@ -53,9 +53,10 @@ jobs:
           REQUIRED=$((45 * 3598))
           if [ ${{ steps.calc.outputs.delta }} -lt $REQUIRED ]; then
             echo "notyet=true" >> $GITHUB_OUTPUT
-            echo 0 > last_run.txt
+
           else
             echo "notyet=false" >> $GITHUB_OUTPUT
+            echo 0 > last_run.txt
           fi
 
       - name: Exit if too early
