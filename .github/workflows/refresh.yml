@@ -56,7 +56,7 @@ jobs:
 
           else
             echo "notyet=false" >> $GITHUB_OUTPUT
-            temp=0
+            temp=$(date +%s)
             echo $temp > last_run.txt
           fi
 
