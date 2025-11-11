@@ -29,6 +29,7 @@ jobs:
         with:
          name: last_run
          path: last_run.txt
+         if-no-files-found: ignore
 
       - name: Get current timestamp and calculate delta
         id: calc
