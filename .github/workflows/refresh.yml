@@ -31,19 +31,13 @@ jobs:
         id: calc
         run: |
           now=$(date +%s)
+          last=${{ vars.LAST_RUN }}
           
-          if [ -f last_run.txt ]; then
-            last=$(cat last_run.txt)
-          else
-            last=0
-          fi
-
           echo "now=$now" >> $GITHUB_OUTPUT
           echo "last=$last" >> $GITHUB_OUTPUT
 
           delta=$((now - last))
           echo "delta=$delta" >> $GITHUB_OUTPUT
-          echo $now > last_run.txt
 
    
 
@@ -53,13 +47,17 @@ jobs:
           REQUIRED=$((45 * 3598))
           if [ ${{ steps.calc.outputs.delta }} -lt $REQUIRED ]; then
             echo "notyet=true" >> $GITHUB_OUTPUT
-
           else
             echo "notyet=false" >> $GITHUB_OUTPUT
             temp=$(date +%s)
             echo $temp > last_run.txt
+            curl -X PATCH \
+              -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github+json" \
+              https://api.github.com/repos/${{ github.repository }}/actions/variables/LAST_RUN \
+              -d "{\"value\":\"$temp\"}"
           fi
-
+   
       - name: Exit if too early
         if: steps.check.outputs.notyet == 'true'
         run: echo "Za wcześnie → workflow kończy się."
@@ -69,9 +67,3 @@ jobs:
         env:
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
         run: node refresh.js
-
-      - name: Save timestamp back to cache
-        uses: actions/cache/save@v4
-        with:
-          path: last_run.txt
-          key: last_run-${{ github.run_id }}
