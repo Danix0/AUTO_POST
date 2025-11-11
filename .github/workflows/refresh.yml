@@ -56,7 +56,7 @@ jobs:
 
           else
             echo "notyet=false" >> $GITHUB_OUTPUT
-            echo 0 > last_run.txt
+            echo "0" > last_run.txt
           fi
 
       - name: Exit if too early
