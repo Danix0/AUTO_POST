@@ -60,8 +60,6 @@ jobs:
           if [ ${{ steps.calc.outputs.delta }} -lt $REQUIRED ]; then
             echo "notyet=true" >> $GITHUB_OUTPUT
           else
-            temp=1
-            echo "LAST_RUN=$temp" >> $GITHUB_VARS
             echo "notyet=false" >> $GITHUB_OUTPUT
           fi
    
