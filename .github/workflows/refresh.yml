@@ -15,7 +15,6 @@ jobs:
     steps:
 
       - uses: actions/checkout@v4
-        if: -f last_run.txt 
       - name: Ustaw Node.js
         uses: actions/setup-node@v4 
         with: 
@@ -23,7 +22,23 @@ jobs:
 
       - name: Zainstaluj zależności
         run: npm install node-fetch@3
-        
+              
+      - name: Check if artifact exists
+        id: check_artifact
+        run: |
+          response=$(gh api repos/${{ github.repository }}/actions/artifacts \
+            --jq '.artifacts[] | select(.name=="last_run") | .id' || true)
+          if [ -z "$response" ]; then
+            echo "Artifact not found."
+            echo "exists=false" >> $GITHUB_OUTPUT
+          else
+            echo "Artifact found with id $response"
+            echo "exists=true" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+          
       - name: Download a single artifact
         if: steps.check_artifact.outputs.exists == 'true'
         uses: actions/download-artifact@v5
