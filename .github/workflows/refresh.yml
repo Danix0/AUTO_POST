@@ -15,6 +15,7 @@ jobs:
     steps:
 
       - uses: actions/checkout@v4
+        if: -f last_run.txt 
       - name: Ustaw Node.js
         uses: actions/setup-node@v4 
         with: 
