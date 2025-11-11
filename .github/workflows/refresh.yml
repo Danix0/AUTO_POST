@@ -25,11 +25,11 @@ jobs:
         run: npm install node-fetch@3
         
       - name: Download a single artifact
+        if: steps.check_artifact.outputs.exists == 'true'
         uses: actions/download-artifact@v5
         with:
          name: last_run
          path: last_run.txt
-        continue-on-error: true
 
       - name: Get current timestamp and calculate delta
         id: calc
