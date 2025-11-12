@@ -40,11 +40,7 @@ jobs:
         run: |
           now=$(date +%s)
 
-          if [ -f last_run.txt ]; then
-            last=$(cat last_run.txt)
-          else
-            last=0
-          fi
+          last=${{ steps.get_var.outputs.last_run }}
           
           echo "now=$now" >> $GITHUB_OUTPUT
           echo "last=$last" >> $GITHUB_OUTPUT
